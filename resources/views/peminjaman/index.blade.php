@@ -37,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                        @forelse ($peminjaman as $p)
+                        @forelse ($peminjamans as $p)
                             <tr class="hover:bg-gray-50/50 transition">
                                 <td class="py-3 px-4 font-medium text-gray-900">{{ $p->user->name ?? 'User Dihapus' }}</td>
                                 <td class="py-3 px-4">{{ $p->buku->judul ?? 'Buku Dihapus' }}</td>
