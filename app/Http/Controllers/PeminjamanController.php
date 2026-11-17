@@ -2,33 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buku;
 use App\Models\Peminjaman;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class PeminjamanController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $peminjamans = Peminjaman::with(['user', 'buku'])->latest()->get();
+
         return view('peminjaman.index', compact('peminjamans'));
     }
 
-    public function store(Request $request, $bukuId)
+    public function store(Buku $buku): RedirectResponse
     {
         Peminjaman::create([
             'user_id' => Auth::id(),
-            'buku_id' => $bukuId,
+            'buku_id' => $buku->id,
             'tanggal_pinjam' => now(),
-            'status' => 'Pending',
+            'status' => 'pending',
         ]);
 
         return redirect()->back()->with('success', 'Pengajuan peminjaman berhasil.');
     }
 
     // Soal 3: Method show dengan Otorisasi Gate
-    public function show($id)
+    public function show(int $id): View
     {
         $peminjaman = Peminjaman::with(['user', 'buku'])->findOrFail($id);
 
@@ -38,30 +41,40 @@ class PeminjamanController extends Controller
         return view('peminjaman.show', compact('peminjaman'));
     }
 
-    public function riwayatSaya()
+    public function riwayatSaya(): View
     {
         $peminjamans = Peminjaman::where('user_id', Auth::id())->with('buku')->latest()->get();
+
         return view('peminjaman.riwayat', compact('peminjamans'));
     }
 
-    public function setujui($id)
+    public function setujui(int $id): RedirectResponse
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->update(['status' => 'Disetujui']);
+
+        $peminjaman->update(['status' => 'dipinjam']);
+
         return redirect()->back()->with('success', 'Peminjaman disetujui.');
     }
 
-    public function tolak($id)
+    public function tolak(int $id): RedirectResponse
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->update(['status' => 'Ditolak']);
+
+        $peminjaman->update(['status' => 'ditolak']);
+
         return redirect()->back()->with('success', 'Peminjaman ditolak.');
     }
 
-    public function kembalikan($id)
+    public function kembalikan(int $id): RedirectResponse
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->update(['status' => 'Dikembalikan']);
+
+        $peminjaman->update([
+            'status' => 'dikembalikan',
+            'tanggal_kembali' => now(),
+        ]);
+
         return redirect()->back()->with('success', 'Buku telah dikembalikan.');
     }
 }

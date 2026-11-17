@@ -83,14 +83,14 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Pengajuan & Pengembalian Buku
-    Route::post('/peminjaman/pinjam/{bukuId}', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+    Route::post('/peminjaman/pinjam/{buku}', [PeminjamanController::class, 'store'])->name('peminjaman.store');
     Route::put('/peminjaman/kembalikan/{id}', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
     Route::get('/riwayat-saya', [PeminjamanController::class, 'riwayatSaya'])->name('peminjaman.riwayat_saya');
 
     // ==========================================
     // RUTE HASIL PENAMBALAN (SOAL 2 & SOAL 3)
     // ==========================================
-    
+
     // Penambalan A2 (SQLi): Menggunakan Parameter Binding ?
     Route::get('/buku-cari', function (\Illuminate\Http\Request $request) {
         $judul = $request->query('judul');
