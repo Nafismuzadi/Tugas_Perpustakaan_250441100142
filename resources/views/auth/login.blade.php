@@ -2,6 +2,10 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <div class="mb-4 text-center">
+        <h2 class="text-lg font-bold text-gray-800">Login PerpusDigital - 250441100142</h2>
+    </div>
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
